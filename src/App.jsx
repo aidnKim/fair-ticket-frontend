@@ -1,17 +1,25 @@
-// src/App.jsx
-
-import { useOutlet } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/layout/Layout';
+import Home from './pages/Home';
 
 function App() {
-    //React Router v6 에서 제공하는 hook
-    //현재 경로에 맞는 자식 route component 를 반환한다
-    const currentOutlet=useOutlet();
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        {/* 메인 페이지 */}
+        <Route path="/" element={<Home />} />
 
-    return (
-        <div className="container">
-            {currentOutlet}
-        </div>
-    );
+        {/* 콘서트 페이지 (예시) */}
+        <Route path="/concert" element={<div className="text-center">콘서트 목록 페이지</div>} />
+
+        {/* 로그인 페이지 (예시) */}
+        <Route path="/login" element={<div className="text-center">로그인 페이지</div>} />
+      </Route>
+
+      {/* layout 적용되지 않는 페이지 */}
+      <Route path="/admin" element={<div>관리자 페이지 (헤더 없음)</div>} />
+    </Routes>
+  );
 }
 
 export default App;
