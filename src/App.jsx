@@ -10,10 +10,10 @@ function App() {
         <Route path="/" element={<Home />} />
 
         {/* 콘서트 페이지 (예시) */}
-        <Route path="/concert" element={<div className="text-center py-20">콘서트 목록 페이지</div>} />
+        <Route path="/concert" element={<div className="text-center">콘서트 목록 페이지</div>} />
 
         {/* 로그인 페이지 (예시) */}
-        <Route path="/login" element={<div className="text-center py-20">로그인 페이지</div>} />
+        <Route path="/login" element={<div className="text-center">로그인 페이지</div>} />
       </Route>
 
       {/* layout 적용되지 않는 페이지 */}
