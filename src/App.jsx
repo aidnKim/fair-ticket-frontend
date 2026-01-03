@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import ConcertList from './pages/ConcertList';
+import ConcertDetail from './pages/ConcertDetail';
 
 function App() {
   return (
@@ -12,6 +13,9 @@ function App() {
 
         {/* 콘서트 페이지 */}
         <Route path="/concert" element={<ConcertList />} />
+
+        {/* 콘서트 상세 페이지 */}
+        <Route path="/concert/:id" element={<ConcertDetail />} />
 
         {/* 로그인 페이지 */}
         <Route path="/login" element={<div className="text-center">로그인 페이지</div>} />

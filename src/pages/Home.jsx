@@ -110,22 +110,24 @@ function Home() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {upcomingConcerts.map((concert) => (
-            <div key={concert.id} className="group cursor-pointer">
-              {/* 포스터 이미지 */}
-              <div className="relative overflow-hidden rounded-lg shadow-md aspect-[3/4] mb-3">
-                <img
-                  src={concert.imageUrl}
-                  alt={concert.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+            <Link to={`/concert/${concert.id}`} key={concert.id} className="group">
+              <div key={concert.id} className="group cursor-pointer">
+                {/* 포스터 이미지 */}
+                <div className="relative overflow-hidden rounded-lg shadow-md aspect-[3/4] mb-3">
+                  <img
+                    src={concert.imageUrl}
+                    alt={concert.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 truncate group-hover:text-red-600 transition-colors">
+                  {concert.title}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  {concert.startDate.split('T')[0]} ~ {concert.endDate.split('T')[0]}
+                </p>
               </div>
-              <h3 className="text-lg font-bold text-gray-900 truncate group-hover:text-red-600 transition-colors">
-                {concert.title}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {concert.startDate.split('T')[0]} ~ {concert.endDate.split('T')[0]}
-              </p>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
