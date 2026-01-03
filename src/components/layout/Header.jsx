@@ -1,7 +1,30 @@
 // src/components/layout/Header.jsx
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 const Header = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  // URL의 search 파라미터와 동기화
+  useEffect(() => {
+    const urlSearch = searchParams.get('search') || '';
+    setSearchKeyword(urlSearch);
+  }, [searchParams]);
+
+  const handleSearch = () => {
+    if (searchKeyword.trim()) {
+      navigate(`/concert?search=${encodeURIComponent(searchKeyword.trim())}`);
+    }
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       {/* 1단: 로고, 검색창, 유저 메뉴 */}
@@ -12,12 +35,24 @@ const Header = () => {
         </Link>
 
         {/* 검색창 (DaisyUI input 활용) */}
-        <div className="flex-1 max-w-lg mx-8">
-          <input 
-            type="text" 
-            placeholder="뮤지컬, 콘서트, 연극 등 검색" 
-            className="input input-bordered w-full h-10 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500" 
+        <div className="flex-1 max-w-lg mx-8 relative">
+          <input
+            type="text"
+            placeholder="콘서트 검색"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="input input-bordered w-full h-10 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500 pl-4 pr-10"
           />
+          <button
+            onClick={handleSearch}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+
+          </button>
         </div>
 
         {/* 유저 메뉴 */}
@@ -31,12 +66,12 @@ const Header = () => {
       <nav className="border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4">
           <ul className="flex gap-8 py-3 text-base font-bold text-gray-800">
-            <li className="text-red-600 border-b-2 border-red-600 pb-1 cursor-pointer">홈</li>
-            <li className="hover:text-red-600 cursor-pointer">콘서트</li>
-            <li className="hover:text-red-600 cursor-pointer">뮤지컬</li>
-            <li className="hover:text-red-600 cursor-pointer">스포츠</li>
-            <li className="hover:text-red-600 cursor-pointer">전시/행사</li>
-            <li className="hover:text-red-600 cursor-pointer">클래식/무용</li>
+            <li className={`cursor-pointer ${location.pathname === '/' ? 'text-red-600 border-b-2 border-red-600 pb-1' : 'hover:text-red-600'}`}>
+              <Link to="/">홈</Link>
+            </li>
+            <li className={`cursor-pointer ${location.pathname === '/concert' ? 'text-red-600 border-b-2 border-red-600 pb-1' : 'hover:text-red-600'}`}>
+              <Link to="/concert">콘서트</Link>
+            </li>
           </ul>
         </div>
       </nav>

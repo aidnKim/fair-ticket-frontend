@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/layout/Layout';
 import Home from './pages/Home';
+import ConcertList from './pages/ConcertList';
 
 function App() {
   return (
@@ -9,10 +10,10 @@ function App() {
         {/* 메인 페이지 */}
         <Route path="/" element={<Home />} />
 
-        {/* 콘서트 페이지 (예시) */}
-        <Route path="/concert" element={<div className="text-center">콘서트 목록 페이지</div>} />
+        {/* 콘서트 페이지 */}
+        <Route path="/concert" element={<ConcertList />} />
 
-        {/* 로그인 페이지 (예시) */}
+        {/* 로그인 페이지 */}
         <Route path="/login" element={<div className="text-center">로그인 페이지</div>} />
       </Route>
 
