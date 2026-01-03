@@ -25,6 +25,23 @@ const Header = () => {
     }
   };
 
+  // 로그인 상태 확인 (토큰이 있으면 true)
+  // localStorage는 문자열을 반환하므로 !!를 써서 boolean으로 변환하거나 null 체크(값이 있으면 true, null 이면 false)
+  const isLogin = !!localStorage.getItem('accessToken');
+
+  // 로그아웃 처리 함수
+  const handleLogout = () => {
+    // 토큰 삭제
+    localStorage.removeItem('accessToken');
+
+    // 알림 및 메인 이동
+    alert("로그아웃 되었습니다.");
+
+    // 화면 새로고침 (헤더 상태 변경을 위해 필요)
+    // navigate('/') 만 쓰면 헤더가 리렌더링 안 될 수 있어서 reload 사용
+    window.location.href = '/';
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       {/* 1단: 로고, 검색창, 유저 메뉴 */}
@@ -56,10 +73,34 @@ const Header = () => {
         </div>
 
         {/* 유저 메뉴 */}
-        <div className="flex gap-4 text-sm text-gray-600 font-medium">
-          <Link to="/login" className="hover:text-red-600">로그인</Link>
-          <Link to="/mypage" className="hover:text-red-600">마이페이지</Link>
+        {/* 로그인 상태에 따른 메뉴 분기 */}
+        <div className="flex gap-4 text-sm font-medium text-gray-600">
+          {isLogin ? (
+            // 로그인 했을 때 보일 메뉴
+            <>
+              <button
+                onClick={handleLogout}
+                className="hover:text-red-500 transition-colors"
+              >
+                로그아웃
+              </button>
+              <Link to="/mypage" className="hover:text-blue-600">
+                마이페이지
+              </Link>
+            </>
+          ) : (
+            // 로그인 안 했을 때 보일 메뉴
+            <>
+              <Link to="/login" className="hover:text-blue-600">
+                로그인
+              </Link>
+              <Link to="/signup" className="hover:text-blue-600">
+                회원가입
+              </Link>
+            </>
+          )}
         </div>
+
       </div>
 
       {/* 2단: 네비게이션 메뉴 */}

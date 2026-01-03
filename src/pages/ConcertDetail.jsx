@@ -30,11 +30,12 @@ const ConcertDetail = () => {
       alert("관람하실 회차를 선택해주세요!");
       return;
     }
-    // TODO: 로그인 체크 후 예매 페이지로 이동
-    const isLoggedIn = false; // 임시: 나중에 토큰 체크로 변경
+    // 로그인 체크 후 예매 페이지로 이동
+    const isLoggedIn = !!localStorage.getItem('accessToken');
+    // 로그인 안 되어있으면 로그인 페이지로 + 현재 경로(또는 예매 경로) 전달
     if (!isLoggedIn) {
         if(window.confirm("로그인이 필요한 서비스입니다.\n로그인 페이지로 이동하시겠습니까?")) {
-            navigate('/login');
+            navigate(`/login?redirect=${encodeURIComponent(location.pathname)}`);
         }
         return;
     }
