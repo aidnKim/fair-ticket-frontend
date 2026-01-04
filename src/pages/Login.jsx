@@ -60,6 +60,7 @@ const Login = () => {
               <input
                 name="email"
                 type="email"
+                autoComplete="username"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500"
                 placeholder="이메일 주소"
@@ -71,6 +72,7 @@ const Login = () => {
               <input
                 name="password"
                 type="password"
+                autoComplete="current-password"
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-red-500 focus:border-red-500"
                 placeholder="비밀번호"
