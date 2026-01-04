@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import ConcertList from './pages/ConcertList';
 import ConcertDetail from './pages/ConcertDetail';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
 
         {/* 로그인 페이지 */}
         <Route path="/login" element={<Login />} />
+
+        {/* 회원가입 페이지 */}
+        <Route path="/signup" element={<Signup />} />
       </Route>
 
       {/* layout 적용되지 않는 페이지 */}
