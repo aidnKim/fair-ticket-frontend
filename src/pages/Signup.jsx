@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../api'; // axios 인스턴스 (경로에 맞게 수정해주세요)
 
 const Signup = () => {
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const redirectPath = searchParams.get('redirect') || '/';
 
   // 입력 데이터를 하나의 상태로 관리
   const [formData, setFormData] = useState({
@@ -44,7 +46,7 @@ const Signup = () => {
       await api.post('/v1/users/signup', requestData);
 
       alert("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.");
-      navigate('/login');
+      navigate(`/login?redirect=${encodeURIComponent(redirectPath)}`);
 
     } catch (err) {
       console.error(err);

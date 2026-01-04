@@ -9,6 +9,8 @@ const Login = () => {
     email: '',
     password: '',
   });
+  // redirect 파라미터가 있으면 그쪽으로, 없으면 홈으로
+  const redirectPath = searchParams.get('redirect') || '/';
 
   useEffect(() => {
     // 이미 로그인되어 있으면 홈으로
@@ -35,8 +37,6 @@ const Login = () => {
       localStorage.setItem('accessToken', token);
 
       alert("로그인 성공!");
-      // redirect 파라미터가 있으면 그쪽으로, 없으면 홈으로
-      const redirectPath = searchParams.get('redirect') || '/';
       navigate(redirectPath, { replace: true });
 
     } catch (error) {
@@ -91,7 +91,7 @@ const Login = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             아직 계정이 없으신가요?{' '}
-            <Link to="/signup" className="font-medium text-red-600 hover:text-red-500">
+            <Link to={`/signup?redirect=${encodeURIComponent(redirectPath)}`} className="font-medium text-red-600 hover:text-red-500">
               회원가입
             </Link>
           </p>
