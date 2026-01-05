@@ -39,7 +39,22 @@ const ConcertDetail = () => {
         }
         return;
     }
-    alert(`스케줄 ID ${selectedScheduleId} 예매 페이지로 이동합니다!`);
+
+    // 선택된 스케줄 객체 찾기 (날짜 정보를 얻기 위해)
+    const selectedSchedule = concert.schedules.find(s => s.id === selectedScheduleId);
+
+    // 날짜와 시간을 보기 좋게 가공
+    const dateObj = new Date(selectedSchedule.concertDate);
+    const dateStr = dateObj.toLocaleDateString(); // 예: 2026. 1. 4.
+    const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }); // 예: 19:00
+
+    navigate(`/booking/${selectedScheduleId}`, {
+     state: {
+        // 알고 있는 정보를 state 로 넘겨주면 Booking 페이지에서 API 로딩 전에 미리 보여줄 수 있음
+        title: concert.title,
+        date: `${dateStr} ${timeStr}`, // "2026. 1. 4. 19:00" 형태로 합쳐서 보냄
+     }
+  });
   };
 
   if (loading) return <div className="text-center py-40">로딩 중...</div>;
