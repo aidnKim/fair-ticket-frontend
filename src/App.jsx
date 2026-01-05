@@ -5,6 +5,7 @@ import ConcertList from './pages/ConcertList';
 import ConcertDetail from './pages/ConcertDetail';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Booking from './pages/Booking';
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
 
         {/* 로그인 페이지 */}
         <Route path="/login" element={<Login />} />
+
+        {/* 예약 페이지 */}
+        <Route path="/booking/:scheduleId" element={<Booking />} />
 
         {/* 회원가입 페이지 */}
         <Route path="/signup" element={<Signup />} />
