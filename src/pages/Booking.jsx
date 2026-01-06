@@ -76,9 +76,14 @@ const Booking = () => {
       return;
     }
     
-    // TODO: 결제 페이지 연결 예정
-    // navigate('/payment', { state: { seat: selectedSeat, title, date } });
-    alert(`[${selectedSeat.seatLabel}] 좌석 선택 완료!\n곧 결제 페이지로 이동합니다.`);
+    // 결제 페이지로 데이터랑 같이 이동
+    navigate('/payment', { 
+      state: { 
+        seat: selectedSeat, // 여기에 price, seatId 등 포함
+        title: title,
+        date: date 
+      } 
+    });
   };
 
   if (loading) {
