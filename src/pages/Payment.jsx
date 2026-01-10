@@ -20,25 +20,29 @@ const Payment = () => {
 
   if (!seat) return null; // 렌더링 방지
 
-  // ★ 결제 요청 함수 (포트원 연동 핵심)
-  const requestPay = () => {
+  // 결제 요청 함수 (포트원 연동)
+  const requestPay = async () => {
     if (!window.IMP) return; // 라이브러리 로딩 확인
 
+    try {
+    // 1. 백엔드에서 주문번호 받아오기
+    const response = await api.get('/v1/payments/prepare');
+    const merchantUid = response.data; // 백엔드가 준 주문번호 (예: ORD-dwq12...)
+
+    console.log("서버에서 받은 주문번호:", merchantUid);
+
     const { IMP } = window;
-    IMP.init('imp01626243'); // 가맹점 식별 코드
+    IMP.init('imp01626243');
 
-    // 주문 번호 생성 (고유해야 함. 실제론 백엔드에서 생성하는 게 좋음)
-    // 여기서는 간단히 타임스탬프 + 랜덤숫자 사용
-    const merchantUid = `order_${new Date().getTime()}_${Math.floor(Math.random() * 1000)}`;
-
+    // 2. 받아온 merchantUid를 넣어서 결제 요청
     IMP.request_pay({
-      pg: 'html5_inicis', // KG이니시스 (테스트 모드)
-      pay_method: 'card', // 결제 수단
-      merchant_uid: merchantUid, // 주문 번호
-      name: `${title} - ${seat.grade}석`, // 주문명
-      amount: seat.price, // 결제 금액 (숫자)
-      buyer_email: 'test@portone.io', // 구매자 이메일 (로그인 유저 정보 넣으면 됨)
-      buyer_name: '홍길동', // 구매자 이름
+      pg: 'html5_inicis',
+      pay_method: 'card',
+      merchant_uid: merchantUid,
+      name: `${title} - ${seat.grade}석`,
+      amount: seat.price,
+      buyer_email: 'test@portone.io',
+      buyer_name: '홍길동',
       buyer_tel: '010-1234-5678',
     }, async (rsp) => {
       if (rsp.success) {
@@ -49,11 +53,10 @@ const Payment = () => {
           // 1. 백엔드에 결제 검증 및 예매 저장 요청
           // rsp.imp_uid: 포트원 거래 고유 ID
           // rsp.merchant_uid: 우리가 만든 주문 ID
-          await api.post('/v1/payments/complete', {
+          await api.post('/v1/payments', {
              impUid: rsp.imp_uid,
              merchantUid: rsp.merchant_uid,
-             scheduleId: seat.scheduleId, // (데이터에 포함되어 있다고 가정)
-             seatId: seat.seatId
+             reservationId: seat.reservationId 
           });
 
           alert("결제가 완료되었습니다!");
@@ -61,8 +64,18 @@ const Payment = () => {
 
         } catch (error) {
           console.error("서버 저장 실패:", error);
-          alert(`결제는 성공했으나 서버 저장에 실패했습니다: ${error.message}`);
-          // (선택) 여기서 결제 취소 API를 호출해주는 것이 정석
+          
+          // 결제 취소 API 호출
+          try {
+              await api.post('/v1/payments/cancel', {
+                  impUid: rsp.imp_uid,
+                  reason: "서버 저장 실패로 인한 자동 취소"
+              });
+              alert("결제가 자동으로 취소되었습니다. 다시 시도해주세요.");
+          } catch (cancelError) {
+              // 취소도 실패하면 고객센터 안내
+              alert("결제 취소에 실패했습니다. 고객센터에 문의해주세요.");
+          }
         }
 
       } else {
@@ -70,7 +83,13 @@ const Payment = () => {
         alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
       }
     });
-  };
+
+  } catch (error) {
+    console.error("주문번호 생성 실패:", error);
+    alert("결제를 시작할 수 없습니다. (주문번호 생성 실패)");
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 flex justify-center items-center">
