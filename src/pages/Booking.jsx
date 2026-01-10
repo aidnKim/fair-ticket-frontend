@@ -70,20 +70,34 @@ const Booking = () => {
   };
 
   // 결제하기 버튼 핸들러
-  const handlePayment = () => {
+  const handlePayment = async () => {
     if (!selectedSeat) {
       alert("좌석을 선택해주세요!");
       return;
     }
-    
-    // 결제 페이지로 데이터랑 같이 이동
-    navigate('/payment', { 
-      state: { 
-        seat: selectedSeat, // 여기에 price, seatId 등 포함
-        title: title,
-        date: date 
-      } 
-    });
+
+    try {
+        // 1. 예약 생성 API 호출 (임시 점유)
+        const response = await api.post('/v1/reservations', {
+            scheduleId: scheduleId,
+            seatId: selectedSeat.seatId
+        });
+        
+        const reservationId = response.data; // 백엔드에서 반환한 예약 ID
+        
+        // 2. 결제 페이지로 이동 (reservationId 포함!)
+        navigate('/payment', { 
+            state: { 
+                seat: selectedSeat,
+                title: title,
+                date: date,
+                reservationId: reservationId  // 추가!
+            } 
+        });
+    } catch (error) {
+        alert(error.response?.data || "좌석 선점에 실패했습니다.");
+    }
+
   };
 
   if (loading) {
