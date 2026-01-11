@@ -91,7 +91,7 @@ const Booking = () => {
                 seat: selectedSeat,
                 title: title,
                 date: date,
-                reservationId: reservationId  // 추가!
+                reservationId: reservationId
             } 
         });
     } catch (error) {
