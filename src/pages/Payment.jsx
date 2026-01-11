@@ -64,18 +64,8 @@ const Payment = () => {
 
         } catch (error) {
           console.error("서버 저장 실패:", error);
-          
-          // 결제 취소 API 호출
-          try {
-              await api.post('/v1/payments/cancel', {
-                  impUid: rsp.imp_uid,
-                  reason: "서버 저장 실패로 인한 자동 취소"
-              });
-              alert("결제가 자동으로 취소되었습니다. 다시 시도해주세요.");
-          } catch (cancelError) {
-              // 취소도 실패하면 고객센터 안내
-              alert("결제 취소에 실패했습니다. 고객센터에 문의해주세요.");
-          }
+          // BE 에서 결제 자동 취소 후 안내
+          alert(error.response?.data || "결제 처리 중 문제가 발생했습니다. 자동 환불됩니다.");
         }
 
       } else {
