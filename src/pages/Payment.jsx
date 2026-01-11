@@ -8,7 +8,7 @@ const Payment = () => {
 
   // Booking 페이지에서 넘겨준 데이터 받기
   // (좌석 정보, 공연 제목, 날짜 등)
-  const { seat, title, date } = location.state || {};
+  const { seat, title, date, reservationId } = location.state || {};
 
   // 데이터가 없으면 예약 페이지로 쫓아냄 (잘못된 접근)
   useEffect(() => {
@@ -50,13 +50,19 @@ const Payment = () => {
         console.log("결제 성공:", rsp);
         
         try {
+          console.log("보내는 데이터:", {
+              impUid: rsp.imp_uid,
+              merchantUid: rsp.merchant_uid,
+              reservationId: reservationId
+          });
+
           // 1. 백엔드에 결제 검증 및 예매 저장 요청
           // rsp.imp_uid: 포트원 거래 고유 ID
           // rsp.merchant_uid: 우리가 만든 주문 ID
           await api.post('/v1/payments', {
              impUid: rsp.imp_uid,
              merchantUid: rsp.merchant_uid,
-             reservationId: seat.reservationId 
+             reservationId: reservationId 
           });
 
           alert("결제가 완료되었습니다!");
@@ -65,7 +71,7 @@ const Payment = () => {
         } catch (error) {
           console.error("서버 저장 실패:", error);
           // BE 에서 결제 자동 취소 후 안내
-          alert(error.response?.data || "결제 처리 중 문제가 발생했습니다. 자동 환불됩니다.");
+          alert(error.response?.data?.error || error.response?.data?.message || "결제 처리 중 문제가 발생했습니다. 자동 환불됩니다.");
         }
 
       } else {
