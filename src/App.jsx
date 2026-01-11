@@ -7,8 +7,24 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Booking from './pages/Booking';
 import Payment from './pages/Payment';
+import { useEffect } from 'react';
+import api from './api';
 
 function App() {
+  useEffect(() => {
+        const checkAuth = async () => {
+            const token = localStorage.getItem('accessToken');
+            if (token) {
+                try {
+                    await api.get('/v1/users/me');
+                } catch (e) {
+                    // 401 → 인터셉터에서 로그아웃 처리
+                }
+            }
+        };
+        checkAuth();
+    }, []);  // 앱 처음 로드될 때 한 번만 실행
+    
   return (
     <Routes>
       <Route element={<Layout />}>

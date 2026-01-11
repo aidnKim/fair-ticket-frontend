@@ -95,7 +95,7 @@ const Booking = () => {
             } 
         });
     } catch (error) {
-        alert(error.response?.data || "좌석 선점에 실패했습니다.");
+        alert(error.response?.data?.error || "좌석 선점에 실패했습니다.");
     }
 
   };
