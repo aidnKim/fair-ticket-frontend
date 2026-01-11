@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
     //만일 token 이 존재한다면
     if (token) {
         //요청의 header 에 Authorization 이라는 키값으로 token 을 전달하도록 한다.
-        config.headers.Authorization = token;
+        config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
 });
