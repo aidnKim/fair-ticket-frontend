@@ -45,6 +45,29 @@ const Login = () => {
     }
   };
 
+  // 테스트 로그인 함수
+  const handleTestLogin = async () => {
+    try {
+      const response = await api.post('/v1/users/login', {
+        email: 'test@test.com',      // 미리 만들어둔 테스트 계정
+        password: '1234'
+      });
+
+      // 토큰 저장
+      console.log("로그인 성공:", response.data);
+
+      const token = response.data;
+      localStorage.setItem('accessToken', token);
+
+      alert('테스트 계정으로 로그인되었습니다!');
+      navigate('/');
+      
+    } catch (error) {
+      console.error('테스트 로그인 실패:', error);
+      alert('테스트 로그인에 실패했습니다.');
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md">
@@ -89,6 +112,22 @@ const Login = () => {
             로그인하기
           </button>
         </form>
+
+        {/* 테스트 로그인 버튼 */}
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <p className="text-center text-sm text-gray-500 mb-3">
+            면접관/테스트용
+          </p>
+          <button
+            onClick={handleTestLogin}
+            className="w-full bg-gray-600 text-white font-bold py-3 rounded-lg hover:bg-gray-700 transition"
+          >
+            테스트 계정으로 로그인
+          </button>
+          <p className="text-center text-xs text-gray-400 mt-2">
+            ID: test@test.com / PW: 1234
+          </p>
+        </div>
 
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
