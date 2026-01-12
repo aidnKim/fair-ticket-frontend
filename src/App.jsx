@@ -9,6 +9,7 @@ import Booking from './pages/Booking';
 import Payment from './pages/Payment';
 import { useEffect } from 'react';
 import api from './api';
+import MyPage from './pages/MyPage';
 
 function App() {
   useEffect(() => {
@@ -48,6 +49,9 @@ function App() {
 
         {/* 결제 페이지 */}
         <Route path="/payment" element={<Payment />} />
+
+        {/* 마이 페이지 */}
+        <Route path="/mypage" element={<MyPage />} />
       </Route>
 
       {/* layout 적용되지 않는 페이지 */}
