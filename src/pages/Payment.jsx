@@ -25,66 +25,83 @@ const Payment = () => {
     if (!window.IMP) return; // 라이브러리 로딩 확인
 
     try {
-    // 1. 백엔드에서 주문번호 받아오기
-    const response = await api.get('/v1/payments/prepare');
-    const merchantUid = response.data; // 백엔드가 준 주문번호 (예: ORD-dwq12...)
+      // 1. 백엔드에서 주문번호 받아오기
+      const response = await api.get('/v1/payments/prepare');
+      const merchantUid = response.data; // 백엔드가 준 주문번호 (예: ORD-dwq12...)
 
-    console.log("서버에서 받은 주문번호:", merchantUid);
+      console.log("서버에서 받은 주문번호:", merchantUid);
 
-    const { IMP } = window;
-    IMP.init('imp01626243');
+      const { IMP } = window;
+      IMP.init('imp01626243');
 
-    // 2. 받아온 merchantUid를 넣어서 결제 요청
-    IMP.request_pay({
-      pg: 'html5_inicis',
-      pay_method: 'card',
-      merchant_uid: merchantUid,
-      name: `${title} - ${seat.grade}석`,
-      amount: seat.price,
-      buyer_email: 'test@portone.io',
-      buyer_name: '홍길동',
-      buyer_tel: '010-1234-5678',
-    }, async (rsp) => {
-      if (rsp.success) {
-        // 결제 성공 시 로직
-        console.log("결제 성공:", rsp);
-        
-        try {
-          console.log("보내는 데이터:", {
+      // 2. 받아온 merchantUid를 넣어서 결제 요청
+      IMP.request_pay({
+        pg: 'html5_inicis',
+        pay_method: 'card',
+        merchant_uid: merchantUid,
+        name: `${title} - ${seat.grade}석`,
+        amount: seat.price,
+        buyer_email: 'test@portone.io',
+        buyer_name: '홍길동',
+        buyer_tel: '010-1234-5678',
+      }, async (rsp) => {
+        if (rsp.success) {
+          // 결제 성공 시 로직
+          console.log("결제 성공:", rsp);
+          
+          try {
+            console.log("보내는 데이터:", {
+                impUid: rsp.imp_uid,
+                merchantUid: rsp.merchant_uid,
+                reservationId: reservationId
+            });
+
+            // 1. 백엔드에 결제 검증 및 예매 저장 요청
+            // rsp.imp_uid: 포트원 거래 고유 ID
+            // rsp.merchant_uid: 우리가 만든 주문 ID
+            await api.post('/v1/payments', {
               impUid: rsp.imp_uid,
               merchantUid: rsp.merchant_uid,
-              reservationId: reservationId
-          });
+              reservationId: reservationId 
+            });
 
-          // 1. 백엔드에 결제 검증 및 예매 저장 요청
-          // rsp.imp_uid: 포트원 거래 고유 ID
-          // rsp.merchant_uid: 우리가 만든 주문 ID
-          await api.post('/v1/payments', {
-             impUid: rsp.imp_uid,
-             merchantUid: rsp.merchant_uid,
-             reservationId: reservationId 
-          });
+            alert("결제가 완료되었습니다!");
+            navigate('/mypage'); // 마이페이지로 이동
 
-          alert("결제가 완료되었습니다!");
-          navigate('/mypage'); // 마이페이지로 이동
+          } catch (error) {
+            console.error("서버 저장 실패:", error);
+            // BE 에서 결제 자동 취소 후 안내
+            alert(error.response?.data?.error || error.response?.data?.message || "결제 처리 중 문제가 발생했습니다. 자동 환불됩니다.");
+          }
 
-        } catch (error) {
-          console.error("서버 저장 실패:", error);
-          // BE 에서 결제 자동 취소 후 안내
-          alert(error.response?.data?.error || error.response?.data?.message || "결제 처리 중 문제가 발생했습니다. 자동 환불됩니다.");
+        } else {
+          // 결제 실패 시 로직
+          alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
         }
+      });
 
-      } else {
-        // 결제 실패 시 로직
-        alert(`결제에 실패하였습니다. 에러 내용: ${rsp.error_msg}`);
-      }
-    });
+    } catch (error) {
+      console.error("주문번호 생성 실패:", error);
+      alert("결제를 시작할 수 없습니다. (주문번호 생성 실패)");
+    }
+  };
 
-  } catch (error) {
-    console.error("주문번호 생성 실패:", error);
-    alert("결제를 시작할 수 없습니다. (주문번호 생성 실패)");
-  }
-};
+  // 테스트 결제 함수 (실제 결제 없이)
+  const requestTestPay = async () => {
+    try {
+      // 백엔드 테스트 결제 API 호출
+      await api.post('/v1/payments/test', {
+        reservationId: reservationId
+      });
+
+      alert("테스트 결제가 완료되었습니다!");
+      navigate('/mypage');
+
+    } catch (error) {
+      console.error("테스트 결제 실패:", error);
+      alert(error.response?.data?.message || "테스트 결제에 실패했습니다.");
+    }
+  };
 
 
   return (
@@ -130,6 +147,17 @@ const Payment = () => {
           >
             결제하기
           </button>
+
+          {/* 테스트 결제 버튼 */}
+          <button
+            onClick={requestTestPay}
+            className="w-full mt-3 bg-gray-600 text-white font-bold py-4 rounded-xl text-lg hover:bg-gray-700 transition shadow-md"
+          >
+            테스트 결제
+          </button>
+          <p className="text-center text-xs text-gray-400 mt-2">
+            ※ 테스트 결제는 실제 결제가 진행되지 않습니다
+          </p>
           
           <button
              onClick={() => navigate(-1)}
