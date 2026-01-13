@@ -116,7 +116,7 @@ const Login = () => {
         {/* 테스트 로그인 버튼 */}
         <div className="mt-6 pt-6 border-t border-gray-200">
           <p className="text-center text-sm text-gray-500 mb-3">
-            면접관/테스트용
+            테스트용
           </p>
           <button
             onClick={handleTestLogin}
