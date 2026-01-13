@@ -70,7 +70,8 @@ const MyPage = () => {
           grade: ticket.seatGrade,
           seatNum: ticket.seatNum,
           price: ticket.price
-        }
+        },
+        expireTime: ticket.expireTime
       }
     });
   };

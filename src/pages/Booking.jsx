@@ -83,7 +83,7 @@ const Booking = () => {
             seatId: selectedSeat.seatId
         });
         
-        const reservationId = response.data; // 백엔드에서 반환한 예약 ID
+        const { reservationId, expireTime } = response.data; // 백엔드에서 반환한 예약 ID + 만료시간
         
         // 2. 결제 페이지로 이동 (reservationId 포함!)
         navigate('/payment', { 
@@ -91,7 +91,8 @@ const Booking = () => {
                 seat: selectedSeat,
                 title: title,
                 date: date,
-                reservationId: reservationId
+                reservationId: reservationId,
+                expireTime: response.data.expireTime
             } 
         });
     } catch (error) {
