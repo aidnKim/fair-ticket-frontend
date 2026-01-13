@@ -101,7 +101,8 @@ const MyPage = () => {
                 {pendingReservations.map((ticket) => (
                   <div 
                     key={ticket.reservationId} 
-                    className="border-2 border-yellow-400 bg-yellow-50 rounded-lg p-6 flex flex-col md:flex-row justify-between items-center"
+                    onClick={() => navigate(`/concert/${ticket.concertId}`)}
+                    className="border-2 border-yellow-400 bg-yellow-50 rounded-lg p-6 flex flex-col md:flex-row justify-between items-center cursor-pointer hover:shadow-lg transition"
                   >
                     {/* 왼쪽: 공연 정보 */}
                     <div className="flex-1 space-y-2 text-center md:text-left mb-4 md:mb-0">
@@ -130,7 +131,10 @@ const MyPage = () => {
                       </span>
                       {calculateRemainingTime(ticket.expireTime) ? (
                         <button
-                          onClick={() => goToPayment(ticket)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            goToPayment(ticket);
+                          }}
                           className="w-full bg-red-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-700"
                         >
                           결제하기
@@ -170,7 +174,8 @@ const MyPage = () => {
                 {paidReservations.map((ticket) => (
                   <div 
                     key={ticket.reservationId} 
-                    className="border rounded-lg p-6 flex flex-col md:flex-row justify-between items-center hover:shadow-md transition-shadow bg-white"
+                    onClick={() => navigate(`/concert/${ticket.concertId}`)}
+                    className="border rounded-lg p-6 flex flex-col md:flex-row justify-between items-center hover:shadow-md transition-shadow bg-white cursor-pointer"
                   >
                     {/* 왼쪽: 공연 정보 */}
                     <div className="flex-1 space-y-2 text-center md:text-left mb-4 md:mb-0">
@@ -195,7 +200,10 @@ const MyPage = () => {
                         {ticket.price?.toLocaleString()}원
                       </span>
                       <button
-                        onClick={() => handleCancel(ticket.reservationId)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCancel(ticket.reservationId);
+                        }}
                         className="text-sm text-gray-500 underline hover:text-red-600 transition-colors"
                       >
                         예매 취소
@@ -216,7 +224,8 @@ const MyPage = () => {
                 {cancelledReservations.map((ticket) => (
                   <div 
                     key={ticket.reservationId} 
-                    className="border rounded-lg p-6 bg-gray-50"
+                    onClick={() => navigate(`/concert/${ticket.concertId}`)}
+                    className="border rounded-lg p-6 bg-gray-50 cursor-pointer hover:shadow-md transition"
                   >
                     <div className="text-gray-500">
                       <span className="font-bold">{ticket.concertTitle}</span>
