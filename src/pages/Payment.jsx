@@ -171,6 +171,11 @@ const Payment = () => {
             </span>
           </div>
 
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-700">
+            💡 <strong>안내:</strong> 결제를 완료하지 않고 나가셔도, 
+            <strong>마이페이지</strong>에서 5분 이내에 이어서 결제하실 수 있습니다.
+          </div>
+
           {/* 실제 결제 버튼 */}
           <button
             onClick={requestPay}
