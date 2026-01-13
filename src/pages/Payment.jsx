@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../api';
 
@@ -8,7 +8,32 @@ const Payment = () => {
 
   // Booking 페이지에서 넘겨준 데이터 받기
   // (좌석 정보, 공연 제목, 날짜 등)
-  const { seat, title, date, reservationId } = location.state || {};
+  const { seat, title, date, reservationId, expireTime } = location.state || {};
+  
+  // 초기값을 즉시 계산하는 함수
+  const calculateTimeLeft = (expireTime) => {
+    if (!expireTime) return null;
+    const now = new Date();
+    const expire = new Date(expireTime);
+    const diff = expire - now;
+    
+    if (diff <= 0) return null;
+    
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    return `${minutes}분 ${seconds}초`;
+  };
+  // 초기값을 바로 계산해서 넣기!
+  const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(expireTime));
+
+  useEffect(() => {
+    if (!expireTime) return;
+    // 1초마다 업데이트
+    const timer = setInterval(() => {
+      setTimeLeft(calculateTimeLeft(expireTime));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [expireTime]);
 
   // 데이터가 없으면 예약 페이지로 쫓아냄 (잘못된 접근)
   useEffect(() => {
@@ -108,8 +133,13 @@ const Payment = () => {
     <div className="min-h-screen bg-gray-50 py-12 px-4 flex justify-center items-center">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden">
         {/* 헤더 */}
-        <div className="bg-red-600 px-6 py-4 text-white">
+        <div className="bg-red-600 px-6 py-4 text-white flex justify-between items-center">
           <h2 className="text-xl font-bold">결제 확인</h2>
+          {timeLeft ? (
+            <span className="text-lg font-bold">⏱ {timeLeft}</span>
+          ) : (
+            <span className="text-lg font-bold">⏱ 만료됨</span>
+          )}
         </div>
 
         {/* 주문 정보 요약 */}
@@ -141,19 +171,33 @@ const Payment = () => {
             </span>
           </div>
 
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-sm text-blue-700">
+            💡 <strong>안내:</strong> 결제를 완료하지 않고 나가셔도, 
+            <strong>마이페이지</strong>에서 5분 이내에 이어서 결제하실 수 있습니다.
+          </div>
+
+          {/* 실제 결제 버튼 */}
           <button
             onClick={requestPay}
-            className="w-full bg-red-600 text-white font-bold py-4 rounded-xl text-lg hover:bg-red-700 transition shadow-md"
+            disabled={!timeLeft}
+            className={`w-full font-bold py-4 rounded-xl text-lg transition shadow-md
+              ${timeLeft 
+                ? 'bg-red-600 text-white hover:bg-red-700' 
+                : 'bg-gray-400 text-white cursor-not-allowed'}`}
           >
-            결제하기
+            {timeLeft ? '결제하기' : '시간 만료'}
           </button>
 
           {/* 테스트 결제 버튼 */}
           <button
             onClick={requestTestPay}
-            className="w-full mt-3 bg-gray-600 text-white font-bold py-4 rounded-xl text-lg hover:bg-gray-700 transition shadow-md"
+            disabled={!timeLeft}
+            className={`w-full mt-3 font-bold py-4 rounded-xl text-lg transition shadow-md
+              ${timeLeft 
+                ? 'bg-gray-600 text-white hover:bg-gray-700' 
+                : 'bg-gray-400 text-white cursor-not-allowed'}`}
           >
-            테스트 결제
+            {timeLeft ? '테스트 결제' : '시간 만료'}
           </button>
           <p className="text-center text-xs text-gray-400 mt-2">
             ※ 테스트 결제는 실제 결제가 진행되지 않습니다
