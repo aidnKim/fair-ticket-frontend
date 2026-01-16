@@ -130,7 +130,7 @@ const Payment = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 flex justify-center items-center">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 flex flex-col justify-center items-center">
       <div className="max-w-md w-full bg-white rounded-xl shadow-lg overflow-hidden">
         {/* 헤더 */}
         <div className="bg-red-600 px-6 py-4 text-white flex justify-between items-center">
@@ -187,6 +187,9 @@ const Payment = () => {
           >
             {timeLeft ? '결제하기' : '시간 만료'}
           </button>
+          <p className="text-center text-xs text-gray-400 mt-2">
+            ※ '결제하기' 버튼을 누르고 결제된 금액은 매일 00시 자동 환불됩니다
+          </p>
 
           {/* 테스트 결제 버튼 */}
           <button
@@ -211,6 +214,9 @@ const Payment = () => {
           </button>
         </div>
       </div>
+      <p className='text-gray-600 mt-4 text-center text-sm'>
+        ※ 본 상품은 테스트 상품으로 실제 예매가 진행되지 않습니다.
+      </p>
     </div>
   );
 };

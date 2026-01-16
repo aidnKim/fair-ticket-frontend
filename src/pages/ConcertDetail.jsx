@@ -79,6 +79,9 @@ const ConcertDetail = () => {
             <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-bold mb-3 inline-block">
               단독판매
             </span>
+            <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-bold mb-3 inline-block">
+              TEST DATA
+            </span>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{concert.title}</h1>
             <p className="text-lg text-gray-600 mb-2">📍 {concert.venue}</p>
             <p className="text-gray-500">
@@ -124,6 +127,9 @@ const ConcertDetail = () => {
           >
             예매하기
           </button>
+          <p className='text-gray-500'>
+            ※ 본 상품은 테스트 상품으로 실제 예매가 진행되지 않습니다.
+          </p>
         </div>
       </div>
 
