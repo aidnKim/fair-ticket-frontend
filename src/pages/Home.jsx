@@ -65,6 +65,9 @@ function Home() {
 
           {/* 대시보드 박스 */}
           <div className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
+            <div className="opacity-50">
+              <span>🚧 Coming Soon (AI 매크로 감지는 추후 업데이트 예정 기능입니다)</span>
+            </div>
             <div className="text-sm text-gray-400 mb-2 font-mono uppercase tracking-widest">
               Live Security Status
             </div>
