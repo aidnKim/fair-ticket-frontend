@@ -28,7 +28,7 @@ EXPOSE 443
 
 # 인증서 없으면 ssl.conf 제거 후 nginx 실행
 CMD ["/bin/sh", "-c", "\
-if [ -f /etc/letsencrypt/live/www.fairticket.store/fullchain.pem ]; then \
+if [ -f /etc/letsencrypt/live/fairticket.store/fullchain.pem ]; then \
   echo 'SSL cert found, HTTPS enabled'; \
 else \
   echo 'SSL cert not found, HTTPS disabled'; \
