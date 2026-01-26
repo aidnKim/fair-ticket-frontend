@@ -11,6 +11,7 @@
 
 ## 안내 (Notice)
 이 프로젝트의 **전체 아키텍처, DB 설계, 핵심 트러블 슈팅(동시성 제어) 내용**은 백엔드 저장소에 상세히 기술되어 있습니다.  
+* **배포 주소:** [서비스 바로가기 (Click)](https://www.fairticket.store)
 **[Backend Repository 바로가기 (Click)](https://github.com/aidnKim/fair-ticket-backend)**
 
 <br>
