@@ -10,6 +10,7 @@ import Payment from './pages/Payment';
 import { useEffect } from 'react';
 import api from './api';
 import MyPage from './pages/MyPage';
+import Queue from './pages/Queue';
 
 function App() {
   useEffect(() => {
@@ -52,6 +53,9 @@ function App() {
 
         {/* 마이 페이지 */}
         <Route path="/mypage" element={<MyPage />} />
+
+        {/* 대기열페이지 */}
+        <Route path="/queue/:scheduleId" element={<Queue />} />
       </Route>
 
       {/* layout 적용되지 않는 페이지 */}
