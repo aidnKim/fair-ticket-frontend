@@ -31,7 +31,7 @@ const Queue = () => {
     enterQueue();
 
     // 2. WebSocket 연결
-    const socket = new SockJS('http://localhost:9000/ws');
+    const socket = new SockJS(`${window.location.origin}/ws`);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
