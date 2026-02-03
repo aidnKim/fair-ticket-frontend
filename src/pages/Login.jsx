@@ -35,6 +35,7 @@ const Login = () => {
 
       const token = response.data;
       localStorage.setItem('accessToken', token);
+      localStorage.setItem('userEmail', formData.email);
 
       alert("로그인 성공!");
       navigate(redirectPath, { replace: true });
@@ -58,6 +59,7 @@ const Login = () => {
 
       const token = response.data;
       localStorage.setItem('accessToken', token);
+      localStorage.setItem('userEmail', 'test@test.com');
 
       alert('테스트 계정으로 로그인되었습니다!');
       navigate('/');

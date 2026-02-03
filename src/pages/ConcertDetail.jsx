@@ -48,13 +48,13 @@ const ConcertDetail = () => {
     const dateStr = dateObj.toLocaleDateString(); // 예: 2026. 1. 4.
     const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }); // 예: 19:00
 
-    navigate(`/booking/${selectedScheduleId}`, {
+    navigate(`/queue/${selectedScheduleId}`, {
      state: {
         // 알고 있는 정보를 state 로 넘겨주면 Booking 페이지에서 API 로딩 전에 미리 보여줄 수 있음
         title: concert.title,
         date: `${dateStr} ${timeStr}`, // "2026. 1. 4. 19:00" 형태로 합쳐서 보냄
      }
-  });
+    });
   };
 
   if (loading) return <div className="text-center py-40">로딩 중...</div>;
