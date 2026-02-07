@@ -11,6 +11,7 @@ const Queue = () => {
   const [position, setPosition] = useState(null);
   const [canEnter, setCanEnter] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [blockedCount, setBlockedCount] = useState(0);
   const stompClientRef = useRef(null);
 
   // 사용자 이메일 (JWT에서 추출 또는 저장된 값 사용)
@@ -51,6 +52,11 @@ const Queue = () => {
           if (data.type === 'ENTER_ALLOWED' && data.canEnter) {
             setCanEnter(true);
           }
+        });
+        // 차단된 매크로 수 실시간 구독
+        stompClient.subscribe('/topic/blocked-count', (message) => {
+          const data = JSON.parse(message.body);
+          setBlockedCount(data.blockedCount);
         });
       },
       onDisconnect: () => setConnected(false),
@@ -107,9 +113,17 @@ const Queue = () => {
               {position ?? '...'}
             </div>
             <p className="text-gray-600 mb-2">현재 대기 순번</p>
-            <p className="text-sm text-gray-400 mb-6">
+            <p className="text-sm text-gray-400 mb-4">
               잠시만 기다려주세요. 순번이 되면 자동으로 알려드립니다.
             </p>
+
+            {/* 차단된 매크로 표시 */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-6">
+              <p className="text-green-700 text-sm font-medium">
+                실시간 차단된 매크로: <span className="font-bold">{blockedCount.toLocaleString()}</span>명
+              </p>
+            </div>
+
             <div className="flex items-center justify-center gap-2 text-sm">
               <span className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
               <span className="text-gray-500">{connected ? '실시간 연결됨' : '연결 중...'}</span>
