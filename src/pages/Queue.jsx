@@ -90,6 +90,15 @@ const Queue = () => {
   const handleEnter = () => {
     navigate(`/booking/${scheduleId}`);
   };
+
+  const handleAttackSimulation = async () => {
+    try {
+      const res = await api.post('/v1/admin/simulate-attack');
+      console.log('시뮬레이션 시작:', res.data);
+    } catch (err) {
+      console.error('시뮬레이션 실패:', err);
+    }
+  };
   
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -123,6 +132,14 @@ const Queue = () => {
                 실시간 차단된 매크로: <span className="font-bold">{blockedCount.toLocaleString()}</span>명
               </p>
             </div>
+
+            {/* 시뮬레이션 버튼 */}
+            <button
+              onClick={handleAttackSimulation}
+              className="w-full bg-red-500 text-white py-2 rounded-lg text-sm hover:bg-red-600 transition mb-4"
+            >
+              🔴 매크로 공격 시뮬레이션
+            </button>
 
             <div className="flex items-center justify-center gap-2 text-sm">
               <span className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500' : 'bg-red-500'}`}></span>
