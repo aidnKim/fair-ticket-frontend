@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import api from '../api';
@@ -8,6 +8,7 @@ const Queue = () => {
 
   const { scheduleId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [position, setPosition] = useState(null);
   const [canEnter, setCanEnter] = useState(false);
   const [connected, setConnected] = useState(false);
@@ -87,7 +88,7 @@ const Queue = () => {
   };
 
   const handleEnter = () => {
-    navigate(`/booking/${scheduleId}`);
+    navigate(`/booking/${scheduleId}`, { state: location.state });
   };
   
   return (
