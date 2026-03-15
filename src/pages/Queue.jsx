@@ -53,10 +53,9 @@ const Queue = () => {
             setCanEnter(true);
           }
         });
-        // 차단된 매크로 수 실시간 구독
+        // 차단된 매크로 수
         stompClient.subscribe('/topic/blocked-count', (message) => {
-          const data = JSON.parse(message.body);
-          setBlockedCount(data.blockedCount);
+          setBlockedCount(prev => prev + 1);  // 이번 세션에서 +1씩만
         });
       },
       onDisconnect: () => setConnected(false),
@@ -113,8 +112,11 @@ const Queue = () => {
               {position ?? '...'}
             </div>
             <p className="text-gray-600 mb-2">현재 대기 순번</p>
-            <p className="text-sm text-gray-400 mb-4">
+            <p className="text-sm text-gray-400">
               잠시만 기다려주세요. 순번이 되면 자동으로 알려드립니다.
+            </p>
+            <p className="text-sm text-gray-400 mb-4">
+              (50명 씩 입장합니다.)
             </p>
 
             {/* 차단된 매크로 표시 */}

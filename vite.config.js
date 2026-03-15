@@ -14,6 +14,11 @@ export default defineConfig({
         secure: false,
         // rewrite: (path) => path.replace(/^\/api/, ''), // '/api' 제거 
       },
+      '/ws': {
+        target: 'http://localhost:9000',
+        changeOrigin: true,
+        ws: true,    // WebSocket 프록시 활성화
+      },
       '/upload':{ //upload 된 이미지를 로딩하기 위한 프록시
         target: 'http://localhost:9000', // 백엔드 서버 주소
         changeOrigin: true
