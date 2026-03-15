@@ -2,10 +2,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api'
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
+
 
 function Home() {
   // 가짜 카운팅 효과 (나중에 WebSocket 데이터로 교체)
-  const [blockedCount, setBlockedCount] = useState(12400);
+  const [blockedCount, setBlockedCount] = useState(0);
 
   //공연 데이터를 담을 State 생성
   const [upcomingConcerts, setUpcomingConcerts] = useState([]);
@@ -15,13 +18,30 @@ function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      // 0.1초마다 1~3씩 숫자가 증가하게 해서 "라이브" 느낌 내기
-      setBlockedCount(prev => prev + Math.floor(Math.random() * 3));
-    }, 100);
+    // 페이지 로드 시 누적값 조회
+    const fetchBlockedCount = async () => {
+        try {
+            const res = await api.get('/v1/admin/blocked-count');
+            setBlockedCount(res.data.blockedCount);
+        } catch (err) {
+            console.error('차단 수 조회 실패:', err);
+        }
+    };
+    fetchBlockedCount();
 
-    return () => clearInterval(interval);
-  }, []);
+    const socket = new SockJS(`${window.location.origin}/ws`);
+    const stompClient = new Client({
+        webSocketFactory: () => socket,
+        onConnect: () => {
+            stompClient.subscribe('/topic/blocked-count', (message) => {
+                const data = JSON.parse(message.body);
+                setBlockedCount(data.blockedCount);
+            });
+        },
+    });
+    stompClient.activate();
+    return () => stompClient.deactivate();
+}, []);
 
   // 공연 데이터
   useEffect(() => {
@@ -48,6 +68,16 @@ function Home() {
     return <div className="text-center py-20 text-red-500">{error}</div>;
   }
 
+  const handleAttackSimulation = async () => {
+    try {
+        const res = await api.post('/v1/admin/simulate-attack');
+        console.log('시뮬레이션 시작:', res.data);
+    } catch (err) {
+        console.error('시뮬레이션 실패:', err);
+    }
+  };
+
+
   return (
     <div className="w-full">
       {/* 섹션 1: Hero Section (보안 대시보드 컨셉) */}
@@ -65,9 +95,6 @@ function Home() {
 
           {/* 대시보드 박스 */}
           <div className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8 shadow-2xl">
-            <div className="opacity-50">
-              <span>🚧 Coming Soon (AI 매크로 감지는 추후 업데이트 예정 기능입니다)</span>
-            </div>
             <div className="text-sm text-gray-400 mb-2 font-mono uppercase tracking-widest">
               Live Security Status
             </div>
@@ -96,6 +123,13 @@ function Home() {
                 <div className="text-sm text-gray-300 mt-2">
                   Fair-Guard 시스템 가동 중
                 </div>
+                {/* 시뮬레이션 버튼 */}
+                <button
+                    onClick={handleAttackSimulation}
+                    className="mt-6 bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-bold transition"
+                >
+                    🔴 매크로 공격 시뮬레이션
+                </button>
               </div>
             </div>
           </div>
