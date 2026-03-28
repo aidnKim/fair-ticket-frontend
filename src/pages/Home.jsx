@@ -80,6 +80,11 @@ function Home() {
 
   return (
     <div className="w-full">
+      {/* 안내 배너 */}
+      <div className="bg-slate-800 text-gray-300 text-sm text-center py-2 px-4">
+        ⚡ 본 서비스는 포트폴리오 프로젝트로, 무료 클라우드 서버에서 운영되어 응답이 다소 느릴 수 있습니다.
+      </div>
+
       {/* 섹션 1: Hero Section (보안 대시보드 컨셉) */}
       <section className="relative bg-slate-900 text-white py-20 px-4 overflow-hidden">
         {/* 배경 장식 */}
